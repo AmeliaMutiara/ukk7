@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use App\DataTables\PenjualanDataTable;
 use Carbon\Carbon;
 use Elibyy\TCPDF\Facades\TCPDF;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 
 class PenjualanController extends Controller
@@ -35,9 +36,12 @@ class PenjualanController extends Controller
             DB::beginTransaction();
 
             $sales = Penjualan::create([
+                'kodePenjualan' => $request->kodePenjualan,
                 'tglPenjualan' => Carbon::now()->format('Y-m-d'),
                 'totalHarga' => $request->totalHarga,
-                'pelanggan_id' => $request->pelanggan_id
+                'user_id' => $request->user_id,
+                'pelanggan_id' => $request->pelanggan_id,
+                'bayar' => $request->bayar
             ]);
 
             foreach ($item as $k => $v) {
@@ -46,6 +50,7 @@ class PenjualanController extends Controller
                 $itm->save();
 
                 $sales->detail()->create([
+                    'kodePenjualan' => $request->kodePenjualan,
                     'produk_id' => $k,
                     'jmlProduk' => $v[0],
                     'subtotal' => ($v[0]*$itm->harga)
@@ -115,35 +120,36 @@ class PenjualanController extends Controller
     public function printSales($id)
     {
         $penjualan = Penjualan::with('detail.produk', 'pelanggan')->find($id);
-        $pdf = new TCPDF('P', 'mm', 'A4', true, 'UTF-8', false);
+        $pdf = new TCPDF('P', 'mm', '80, 80', true, 'UTF-8', false);
 
         // Set margins
         $pdf::SetHeaderMargin(5);
         $pdf::SetFooterMargin(10);
 
         // Add a page
-        $pdf::AddPage();
+        $pdf::AddPage('p',[1000,80]);
 
         // Set header and footer fonts
         $pdf::setHeaderFont(Array('helvetica', '', 10));
         $pdf::setFooterFont(Array('helvetica', '', 8));
 
         // Output nama toko dan alamat toko
-        $pdf::Cell(0, 10, 'Nama Toko', 0, 1, 'C');
-        $pdf::Cell(0, 10, 'Alamat Toko', 0, 1, 'C');
-
+        $pdf::Cell(0, 5, 'Nama Toko', 0, 1, 'C');
+        $pdf::Cell(0,10, 'Alamat Toko', 0, 1, 'C');
+        $pdf::SetFont('helvetica','', 9);
+        $pdf::SetMargins(5,1,5);
         // Content
         $content = '
             <hr>
             <h3>Struk Pembelian</h3>
             <p><strong>Tanggal Penjualan:</strong> ' . $penjualan->tglPenjualan . '</p>
-            <p><strong>Nama Pelanggan:</strong> ' . ($penjualan->pelanggan ? $penjualan->pelanggan->namaPelanggan : '-') . '</p>
+            <p><strong>Nama Pelanggan   :</strong> ' . ($penjualan->pelanggan ? $penjualan->pelanggan->namaPelanggan : '-') . '</p>
             <table border="0" cellpadding="5">
                 <tr>
-                    <th>Nama Produk</th>
-                    <th>Harga</th>
-                    <th>Jumlah</th>
-                    <th>Subtotal</th>
+                    <th><strong>Nama Produk</strong></th>
+                    <th><strong>Harga</strong></th>
+                    <th><strong>Jumlah</strong></th>
+                    <th><strong>Subtotal</strong></th>
                 </tr>';
 
         // Loop through sale details
@@ -160,8 +166,16 @@ class PenjualanController extends Controller
         // Total sale amount
         $content .= '
                 <tr>
-                    <td colspan="3" align="right"><strong>Total Pembelian Barang:</strong></td>
-                    <td>' . 'Rp. ' . number_format($penjualan->totalHarga,2) . '</td>
+                    <td colspan="2" align="right"><strong>Total :</strong></td>
+                    <td colspan="2" align="right">' . 'Rp. ' . number_format($penjualan->totalHarga,2) . '</td>
+                </tr>
+                <tr>
+                    <td colspan="2" align="right"><strong>Bayar :</strong></td>
+                    <td colspan="2" align="right">' . 'Rp. ' . number_format($penjualan->bayar,2) . '</td>
+                </tr>
+                <tr>
+                    <td colspan="2" align="right"><strong>Kembalian :</strong></td>
+                    <td colspan="2" align="right">' . 'Rp. ' . number_format($penjualan->bayar-$penjualan->totalHarga,2) . '</td>
                 </tr>
             </table>';
 
@@ -172,4 +186,18 @@ class PenjualanController extends Controller
         $pdf::Output('struk_pembelian.pdf', 'I');
     }
 
+    public function filter(Request $request) {
+          $filter = Session::get('filter');
+          $filter['start_date'] = $request->start_date;
+          $filter['end_date'] = $request->end_date;
+          Session::put('filter',$filter);
+          return redirect()->route('sales.index');
+    }
+
+    public function resetFilter()
+    {
+        Session::forget('start_date');
+        Session::forget('end_date');
+        return redirect()->route('sales.index');
+    }
 }

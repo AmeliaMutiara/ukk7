@@ -22,8 +22,8 @@ class UserDataTable extends DataTable
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
         $level = [
-            0 => 'Petugas',
-            1 => 'Admin'
+            'kasir' => 'Kasir',
+            'admin' => 'Admin'
         ];
         return (new EloquentDataTable($query))
             ->addIndexColumn()
@@ -71,8 +71,9 @@ class UserDataTable extends DataTable
     {
         return [
             Column::make('id')->title(__('No'))->data('DT_RowIndex')->addClass('text-center')->width(10),
-            Column::make('name')->title('Nama User'),
-            Column::make('level')->title('Level User'),
+            Column::make('name')->title('Nama'),
+            Column::make('username')->title('Username'),
+            Column::make('level')->title('Level'),
             Column::computed('action')->title('Aksi')
                   ->exportable(false)
                   ->printable(false)

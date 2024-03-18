@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Penjualan extends Model
+class Pembelian extends Model
 {
     use HasFactory, SoftDeletes;
     protected $guarded = [
@@ -15,10 +15,11 @@ class Penjualan extends Model
     ];
 
     public function detail() {
-        return $this->hasMany(DetailPenjualan::class, 'kodePenjualan', 'kodePenjualan');
+        return $this->hasMany(DetailPembelian::class);
     }
 
-    public function pelanggan() {
-        return $this->belongsTo(Pelanggan::class);
+    public function produk()
+    {
+        return $this->hasManyThrough(Produk::class, DetailPembelian::class);
     }
 }

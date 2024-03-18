@@ -1,9 +1,9 @@
 @extends('adminlte::page')
 
-@section('title', 'Pelanggan')
+@section('title', 'Pembelian')
 
 @section('content_header')
-    <h1>Daftar Pelanggan</h1>
+    <h1>Daftar Pembelian</h1>
 @stop
 
 @section('content')
@@ -25,11 +25,9 @@
                 Daftar
             </h5>
             <div class="form-actions float-right">
-                @if (Auth::user()->level == 'kasir')
-                    <a href="{{ route('customer.add') }}" name="Find" class="btn btn-sm btn-primary" title="Add Data">
-                        <i class="fa fa-plus"></i> Tambah Data
-                    </a>
-                @endif
+                <a href="{{ route('purchase.add') }}" name="Find" class="btn btn-sm btn-primary" title="Add Data">
+                    <i class="fa fa-plus"></i> Tambah Data
+                </a>
             </div>
         </div>
         <div class="card-body">

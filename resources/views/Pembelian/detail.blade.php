@@ -1,9 +1,9 @@
 @extends('adminlte::page')
 
-@section('title', 'Penjualan')
+@section('title', 'Pembelian')
 
 @section('content_header')
-    <h1>Detail Penjualan</h1>
+    <h1>Detail Pembelian</h1>
 @stop
 
 @section('content')
@@ -25,12 +25,17 @@
                 Detail
             </h5>
             <div class="form-actions float-right">
-                <a href="{{ route('sales.index') }}" name="Find" class="btn btn-sm btn-primary" title="Back">
+                <a href="{{ route('purchase.index') }}" name="Find" class="btn btn-sm btn-primary" title="Back">
                     <i class="fa fa-arrow-left"></i> Kembali
                 </a>
             </div>
         </div>
         <div class="card-body">
+            <div class="row">
+                <div class="col-md-3">
+                    <x-adminlte-input name="tglPembelian" label="Tanggal Pembelian" disabled value="{{ date('d-m-Y', strtotime($pembelian->tglPembelian)) }}" />
+                </div>
+            </div>
             <div class="table-responsive">
                 <table class="table table-striped table-bordered table-hover">
                     <thead>
@@ -44,14 +49,13 @@
                         @php
                             $no = 1;
                             $total = 0;
-                            $kembalian = 0;
                         @endphp
-                        @if (empty($penjualan->detail))
+                        @if (empty($pembelian->detail))
                             <tr>
                                 <td colspan="6" class="text-center">Data Kosong</td>
                             </tr>
                         @else
-                            @foreach ($penjualan->detail as $k => $v)
+                            @foreach ($pembelian->detail as $k => $v)
                                 <tr>
                                     <td class="text-center">{{ $no++ }}</td>
                                     <td>{{ $v->produk->namaProduk }}</td>
@@ -75,29 +79,6 @@
             </div>
         </div>
     </div>
-    <div class="card border border-dark">
-        <div class="card-body">
-            <div class="row">
-                @php
-                    $bayar = $penjualan->bayar;
-                    $kembalian = $bayar - $total;
-                @endphp
-                <div class="col-md-6">
-                    <x-adminlte-input name="tglPenjualan" label="Tanggal Penjualan" disabled value="{{ date('d-m-Y', strtotime($penjualan->tglPenjualan)) }}" />
-                </div>
-                <div class="col-md-6">
-                    <x-adminlte-input name="pelanggan_id" label="Nama Pelanggan" disabled value="{{ $penjualan->pelanggan->namaPelanggan ?? '-' }}" />
-                </div>
-                <div class="col-md-6">
-                    <x-adminlte-input name="bayar" disabled id="bayar" type="number" label="Bayar" value="{{ $bayar }}" />
-                </div>
-                <div class="col-md-6">
-                    <x-adminlte-input name="sisa" id="sisa" label="Sisa" value="{{ $kembalian }}" readonly />
-
-                </div>
-            </div>
-        </div>
-    </div>
 @stop
 
 @section('css')
@@ -105,6 +86,7 @@
 @stop
 
 @section('js')
+    <script></script>
 @stop
 
 @section('footer')

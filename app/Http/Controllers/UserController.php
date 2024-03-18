@@ -12,7 +12,7 @@ class UserController extends Controller
 {
     public function index(UserDataTable $table)
     {
-        if (Auth::user()->level) {
+        if (Auth::user()->level == 'admin') {
             return $table->render('User.index');
         } else {
             return redirect()->route('user.edit', Auth::id());
@@ -22,8 +22,8 @@ class UserController extends Controller
     public function create()
     {
         $level = [
-            0 => 'Petugas',
-            1 => 'Admin'
+            'kasir' => 'Kasir',
+            'admin' => 'Admin'
         ];
         return view('User.add', compact('level'));
     }
@@ -31,13 +31,13 @@ class UserController extends Controller
     public function update($id)
     {
         $level = [
-            0 => 'Petugas',
-            1 => 'Admin'
+            'kasir' => 'Kasir',
+            'admin' => 'Admin'
         ];
 
         if (is_null($id)) {
             $id = Auth::id();
-        } elseif (!Auth::user()->level) {
+        } elseif (!Auth::user()->level == 'kasir') {
             $id = Auth::id();
         }
 
@@ -49,21 +49,26 @@ class UserController extends Controller
     {
         $request->validate([
             'name' => 'required',
+            'username' => 'required',
             'password' => 'required',
-            'level' => 'required'
+            'level' => 'required|in:admin,kasir'
         ], [
-            'name.required' => 'Kolom Nama User Harus Terisi',
-            'password.required' => 'Kolom Password User Harus Terisi',
-            'level.required' => 'Kolom Level User Harus Dipilih',
+            'name.required' => 'Kolom Nama Harus Terisi',
+            'username.required' => 'Kolom Username Harus Terisi',
+            'password.required' => 'Kolom Password Harus Terisi',
+            'level.required' => 'Kolom Level Harus Dipilih',
+            'level.in' => 'Kolom Level User Harus Admin atau Kasir',
         ]);
 
         try {
             DB::beginTransaction();
             User::create($request->all());
             DB::commit();
+            // dd($request->all());
             return redirect()->route('user.index')->with(['msg' => 'Berhasil Menambahkan Data User', 'type' => 'success']);
         } catch (\Exception $e) {
             DB::rollBack();
+            dd($e);
             report($e);
             return redirect()->route('user.add')->with(['msg' => 'Gagal Menambahkan Data User', 'type' => 'danger']);
         }
@@ -73,17 +78,20 @@ class UserController extends Controller
     {
         $request->validate([
             'name' => 'required',
-            'level' => 'required'
+            'username' => 'required',
+            'level' => 'required|in:admin,kasir'
         ], [
-            'name.required' => 'Kolom Nama User Harus Terisi',
-            'level.required' => 'Kolom Level User Harus Dipilih',
+            'name.required' => 'Kolom Nama Harus Terisi',
+            'username.required' => 'Kolom Username Harus Terisi',
+            'level.required' => 'Kolom Level Harus Dipilih',
+            'level.in' => 'Kolom Level User Harus Admin atau Kasir',
         ]);
 
         try {
             DB::beginTransaction();
 
             $id = $request->id;
-            if (!Auth::user()->level&&$request->id!=Auth::id()) {
+            if (!Auth::user()->level == 'kasir' && $request->id!=Auth::id()) {
                 $id = Auth::id();
             }
 

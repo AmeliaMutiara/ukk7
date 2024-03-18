@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\PelangganController;
+use App\Http\Controllers\PembelianController;
 use App\Http\Controllers\PenjualanController;
 use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\UserController;
@@ -57,5 +58,18 @@ Route::middleware('auth')->group(function() {
         Route::get('/delete/{id?}', [PenjualanController::class, 'delete'])->name('delete');
         Route::get('/delete-item/{id?}', [PenjualanController::class, 'deleteSalesItem'])->name('delete-item');
         Route::get('/print/{id?}', [PenjualanController::class, 'printSales'])->name('print');
+        Route::post('/filter', [PenjualanController::class, 'filter'])->name('filter');
+        Route::post('/filter-reset', [PenjualanController::class, 'resetFilter'])->name('filter-reset');
+    });
+    Route::prefix('purchase')->name('purchase.')->group(function() {
+        Route::get('/', [PembelianController::class, 'index'])->name('index');
+        Route::get('/add', [PembelianController::class, 'create'])->name('add');
+        Route::post('/add-process', [PembelianController::class, 'processCreate'])->name('add-process');
+        Route::post('/add-item', [PembelianController::class, 'addPurchaseItem'])->name('add-item');
+        Route::get('/detail/{id?}', [PembelianController::class, 'detailPurchase'])->name('detail');
+        Route::get('/delete/{id?}', [PembelianController::class, 'delete'])->name('delete');
+        Route::get('/delete-item/{id?}', [PembelianController::class, 'deletePurchaseItem'])->name('delete-item');
+        Route::post('/filter', [PembelianController::class, 'filter'])->name('filter');
+        Route::post('/filter-reset', [PembelianController::class, 'resetFilter'])->name('filter-reset');
     });
 });

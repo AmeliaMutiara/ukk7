@@ -14,7 +14,7 @@
     @endif
     @if (count($errors) > 0)
         <div class="alert-danger" role="alert">
-            @foreach ($errors as $e)
+            @foreach ($errors->all() as $e)
                 {{ $e }}
             @endforeach
         </div>
@@ -34,11 +34,13 @@
             <div class="card-body">
                 @csrf
                 <div class="row">
-                    <x-adminlte-input name="name" label="Nama User" value="{{ $sessiondata['name'] ?? '' }}" placeholder="Masukkan Nama User"
-                        fgroup-class="col-md-4 required" disable-feedback />
-                    <x-adminlte-input name="password" type="password" label="Password User" value="{{ $sessiondata['password'] ?? '' }}" placeholder="Masukkan Password User"
-                        fgroup-class="col-md-4 required" disable-feedback />
-                    <x-adminlte-select2 name="level" label="Level User" class="required" autocomplete="off" data-placeholder="Pilih Level..." fgroup-class="col-md-4 required">
+                    <x-adminlte-input name="name" label="Nama" value="{{ $sessiondata['name'] ?? '' }}" placeholder="Masukkan Nama"
+                        fgroup-class="col-md-6 required" disable-feedback />
+                    <x-adminlte-input name="username" label="Username" value="{{ $sessiondata['username'] ?? '' }}" placeholder="Masukkan Username"
+                        fgroup-class="col-md-6 required" disable-feedback />
+                    <x-adminlte-input name="password" type="password" label="Password" value="{{ $sessiondata['password'] ?? '' }}" placeholder="Masukkan Password User"
+                        fgroup-class="col-md-6 required" disable-feedback />
+                    <x-adminlte-select2 name="level" label="Level" class="required" autocomplete="off" data-placeholder="Pilih Level..." fgroup-class="col-md-6 required">
                         <option/>
                         @foreach ($level as $key => $value)
                             <option value="{{ $key }}">{{ $value }}</option>

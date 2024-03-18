@@ -4,6 +4,7 @@ namespace App\DataTables;
 
 use App\Models\Pelanggan;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Title;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
@@ -65,19 +66,25 @@ class PelangganDataTable extends DataTable
      */
     public function getColumns(): array
     {
-        return [
+        $col=
+        [
             Column::make('id')->title(__('No'))->data('DT_RowIndex')->addClass('text-center')->width(10),
             Column::make('namaPelanggan')->title('Nama Pelanggan'),
             Column::make('noTelp')->title('Nomor Telepon'),
-            Column::make('alamat')->title('Alamat'),
-            Column::computed('action')->title('Aksi')
-                  ->exportable(false)
-                  ->printable(false)
-                  ->width(60)
-                  ->addClass('text-center'),
+            Column::make('alamat')->title('Alamat')
         ];
+        if(Auth::user()->level=="kasir"){
+    
+            $ation=   Column::computed('action')->title('Aksi')
+            ->exportable(false)
+            ->printable(false)
+            ->width(60)
+            ->addClass('text-center');
+            array_push($col,$ation);
+        }
+        return $col;
     }
-
+    
     /**
      * Get the filename for export.
      */

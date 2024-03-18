@@ -14,7 +14,7 @@
     @endif
     @if (count($errors) > 0)
         <div class="alert-danger" role="alert">
-            @foreach ($errors as $e)
+            @foreach ($errors->all() as $e)
                 {{ $e }}
             @endforeach
         </div>
@@ -35,13 +35,15 @@
                 @csrf
                 <div class="row">
                     <x-adminlte-input name="id" type="hidden" value="{{ $data->id }}" />
-                    <x-adminlte-input name="name" label="Nama User" value="{{ $data->name }}" placeholder="Masukkan Nama User"
-                        fgroup-class="col-md-4 required" disable-feedback />
-                    <x-adminlte-input name="password" type="password" label="Password User" placeholder="Masukkan Password Baru (opsional)" fgroup-class="col-md-4 required" disable-feedback />
-                    <x-adminlte-select2 name="level" label="Level User" class="required" autocomplete="off" placeholder="Masukkan Stok Produk" fgroup-class="col-md-4 required">
+                    <x-adminlte-input name="name" label="Nama" value="{{ $data->name }}" placeholder="Masukkan Nama"
+                        fgroup-class="col-md-6 required" disable-feedback />
+                    <x-adminlte-input name="username" label="Username" value="{{ $data->username }}" placeholder="Masukkan Username"
+                        fgroup-class="col-md-6 required" disable-feedback />
+                    <x-adminlte-input name="password" type="password" label="Password User" placeholder="Masukkan Password Baru (opsional)" fgroup-class="col-md-6 required" disable-feedback />
+                    <x-adminlte-select2 name="level" label="Level User" class="required" autocomplete="off" data-placeholder="Pilih Level..." fgroup-class="col-md-6 required">
                         <option/>
                         @foreach ($level as $key => $value)
-                            <option value="{{ $key }}" @selected($key==$data->value)>{{ $value }}</option>
+                            <option value="{{ $key }}" @selected($key==$data->level)>{{ $value }}</option>
                         @endforeach
                     </x-adminlte-select2>
                 </div>

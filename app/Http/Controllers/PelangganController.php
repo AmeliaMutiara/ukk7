@@ -13,13 +13,13 @@ class PelangganController extends Controller
 {
     public function index(PelangganDataTable $table)
     {
-        Session::forget('data-pelanggan');
+        Session::forget('data-pelanggan');  
         return $table->render('Pelanggan.index');
     }
 
     public function create()
     {
-        if (Auth::user()->level == 'petugas') {
+        if (Auth::user()->level == 'kasir') {
             $sessiondata = Session::get('data-pelanggan');
             return view('Pelanggan.add', compact('sessiondata'));
         } else {

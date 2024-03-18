@@ -14,7 +14,7 @@
     @endif
     @if (count($errors) > 0)
         <div class="alert-danger" role="alert">
-            @foreach ($errors as $e)
+            @foreach ($errors->all() as $e)
                 {{ $e }}
             @endforeach
         </div>
@@ -25,9 +25,11 @@
                 Daftar
             </h5>
             <div class="form-actions float-right">
-                <a href="{{ route('product.add') }}" name="Find" class="btn btn-sm btn-primary" title="Add Data">
-                    <i class="fa fa-plus"></i> Tambah Data
-                </a>
+                @if (Auth::user()->level == 'admin')
+                    <a href="{{ route('product.add') }}" name="Find" class="btn btn-sm btn-primary" title="Add Data">
+                        <i class="fa fa-plus"></i> Tambah Data
+                    </a>
+                @endif
             </div>
         </div>
         <div class="card-body">

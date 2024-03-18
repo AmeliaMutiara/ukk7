@@ -11,12 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('produks', function (Blueprint $table) {
+        Schema::create('pembelians', function (Blueprint $table) {
             $table->id();
-            $table->string('kodeProduk')->unique()->nullable();
-            $table->string('namaProduk')->nullable();
-            $table->decimal('harga', 10)->nullable();
-            $table->integer('stok')->nullable()->default(0);
+            $table->date('tglPembelian')->nullable();
+            $table->decimal('totalHarga',10)->nullable();
             $table->timestamps();
             $table->softDeletesTz();
         });
@@ -27,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('produks');
+        Schema::dropIfExists('penjualans');
     }
 };

@@ -1,9 +1,9 @@
 @extends('adminlte::page')
 
-@section('title', 'Penjualan')
+@section('title', 'Pembelian')
 
 @section('content_header')
-    <h1>Tambah Penjualan</h1>
+    <h1>Tambah Pembelian</h1>
 @stop
 
 @section('content')
@@ -21,7 +21,7 @@
     @endif
     <div class="card border border-dark">
         <div class="card-body">
-            <form action="{{ route('sales.add-item') }}" method="post">
+            <form action="{{ route('purchase.add-item') }}" method="post">
                 @csrf
                 <div class="row">
                     <div class="col">
@@ -49,7 +49,7 @@
                 Daftar Produk
             </h5>
             <div class="form-actions float-right">
-                <a href="{{ route('sales.index') }}" name="Find" class="btn btn-sm btn-primary" title="Back">
+                <a href="{{ route('purchase.index') }}" name="Find" class="btn btn-sm btn-primary" title="Back">
                     <i class="fa fa-arrow-left"></i> Kembali
                 </a>
             </div>
@@ -69,7 +69,6 @@
                         @php
                             $no = 1;
                             $total = 0;
-                            $kembalian = 0;
                         @endphp
                         @if (empty($sessiondata))
                             <tr>
@@ -84,11 +83,11 @@
                                     <td class="text-center">{{ $v[0] }}</td>
                                     <td class="text-right">{{ number_format($v[0]*$v[1],2) }}</td>
                                     <td class="text-center">
-                                        <x-adminlte-button class="btn-sm" theme="danger" icon="fas fa-trash" onclick="location.href='{{ route('sales.delete-item') }}';" />
+                                        <x-adminlte-button class="btn-sm" theme="danger" icon="fas fa-trash" onclick="location.href='{{ route('purchase.delete-item') }}';" />
                                     </td>
                                 </tr>
                                 @php
-                                    $total += ($v[0]*$v[1]);
+                                    $total += ($v[0]*$v[1])
                                 @endphp
                             @endforeach
                         @endif
@@ -105,23 +104,11 @@
     </div>
     <div class="card border border-dark">
         <div class="card-body">
-            <form action="{{ route('sales.add-process') }}" method="post">
+            <form action="{{ route('purchase.add-process') }}" method="post">
                 @csrf
                 <div class="row">
                     <div class="col">
-                        @php
-                            $bayar = isset($sessiondata['bayar']) ? $sessiondata['bayar'] : 0;
-                        @endphp
-                        <x-adminlte-select2 name="pelanggan_id" label="Pelanggan" class="required" autocomplete="off" data-placeholder="Pilih Pelanggan...">
-                            <option/>
-                            @foreach ($pelanggan as $key => $value)
-                                <option value="{{ $key }}">{{ $value }}</option>
-                            @endforeach
-                        </x-adminlte-select2>
-                        <x-adminlte-input name="kodePenjualan" label="Kode Penjualan" placeholder="Masukkan Kode Penjualan" />
-                        <x-adminlte-input name="totalHarga" id="totalHarga" label="Total" value="{{ $total }}" readonly />
-                        <x-adminlte-input name="bayar" id="bayar" type="number" label="Bayar" value="{{ $bayar }}" />
-                        <x-adminlte-input name="sisa" id="sisa" label="Sisa" value="{{ $kembalian }}" readonly />
+                        <x-adminlte-input name="totalHarga" label="Total Pembelian" value="{{ $total }}" readonly />
                     </div>
                 </div>
             </div>
@@ -140,30 +127,7 @@
 @stop
 
 @section('js')
-<script>
-    // Ambil elemen-elemen form
-    var totalHargaInput = document.getElementById('totalHarga');
-    var bayarInput = document.getElementById('bayar');
-    var sisaInput = document.getElementById('sisa');
-
-    // Fungsi untuk menghitung kembalian dan memperbarui nilai input sisa
-    function hitungKembalian() {
-        var totalHarga = parseFloat(totalHargaInput.value);
-        var bayar = parseFloat(bayarInput.value);
-
-        // Hitung kembalian
-        var kembalian = bayar - totalHarga;
-
-        // Periksa apakah kembalian negatif, jika ya, atur menjadi 0
-        kembalian = kembalian < 0 ? 0 : kembalian;
-
-        // Atur nilai input sisa
-        sisaInput.value = kembalian; // Format dengan dua angka desimal
-    }
-
-    // Panggil fungsi hitungKembalian setiap kali nilai input bayar berubah
-    bayarInput.addEventListener('input', hitungKembalian);
-</script>
+    <script></script>
 @stop
 
 @section('footer')

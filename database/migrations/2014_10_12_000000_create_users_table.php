@@ -16,15 +16,16 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('username');
             $table->string('password');
-            $table->tinyInteger('level')->default(0);
+            $table->enum('level', ['admin', 'kasir'])->default('kasir');
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletesTz();
         });
         DB::table('users')->insert([
-            ['name' => 'administrator', 'password' => Hash::make('halo1234'), 'level' => '1'],
-            ['name' => 'petugas', 'password' => Hash::make('halo4321'), 'level' => '0'],
+            ['name' => 'Administrator', 'username' => 'administrator', 'password' => Hash::make('halo1234'), 'level' => 'admin'],
+            ['name' => 'Kasir','username' => 'kasir', 'password' => Hash::make('halo4321'), 'level' => 'kasir'],
         ]);
     }
 

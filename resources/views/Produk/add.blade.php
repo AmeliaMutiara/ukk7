@@ -14,7 +14,7 @@
     @endif
     @if (count($errors) > 0)
         <div class="alert-danger" role="alert">
-            @foreach ($errors as $e)
+            @foreach ($errors->all() as $e)
                 {{ $e }}
             @endforeach
         </div>
@@ -34,12 +34,14 @@
             <div class="card-body">
                 @csrf
                 <div class="row">
+                    <x-adminlte-input name="kodeProduk" label="Kode Produk" value="{{ $sessiondata['kodeProduk'] ?? '' }}" placeholder="Masukkan Kode Produk"
+                        fgroup-class="col-md-6 required" disable-feedback />
                     <x-adminlte-input name="namaProduk" label="Nama Produk" value="{{ $sessiondata['namaProduk'] ?? '' }}" placeholder="Masukkan Nama Produk"
-                        fgroup-class="col-md-4 required" disable-feedback />
+                        fgroup-class="col-md-6 required" disable-feedback />
                     <x-adminlte-input name="harga" type="number" label="Harga Produk" value="{{ $sessiondata['harga'] ?? '' }}" placeholder="Masukkan Harga Produk"
-                        fgroup-class="col-md-4 required" disable-feedback />
+                        fgroup-class="col-md-6 required" disable-feedback />
                     <x-adminlte-input name="stok" type="number" label="Stok Produk" value="{{ $sessiondata['stok'] ?? '' }}" placeholder="Masukkan Stok Produk"
-                        fgroup-class="col-md-4 required" disable-feedback />
+                        fgroup-class="col-md-6 required" disable-feedback />
                 </div>
             </div>
             <div class="card-footer text-muted">

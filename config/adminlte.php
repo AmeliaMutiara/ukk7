@@ -320,6 +320,11 @@ return [
             'icon' => 'fas fa-fw fa-money-bill',
         ],
         [
+            'text' => 'Pembelian',
+            'url' => 'purchase',
+            'icon' => 'fas fa-fw fa-shopping-cart',
+        ],
+        [
             'text' => 'Produk',
             'url' => 'product',
             'icon' => 'fas fa-fw fa-box',

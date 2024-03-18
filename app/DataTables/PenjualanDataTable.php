@@ -3,14 +3,16 @@
 namespace App\DataTables;
 
 use App\Models\Penjualan;
-use Illuminate\Database\Eloquent\Builder as QueryBuilder;
-use Yajra\DataTables\EloquentDataTable;
-use Yajra\DataTables\Html\Builder as HtmlBuilder;
+use Carbon\Carbon;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
+use Illuminate\Support\Facades\Session;
+use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Editor\Editor;
 use Yajra\DataTables\Html\Editor\Fields;
 use Yajra\DataTables\Services\DataTable;
+use Yajra\DataTables\Html\Builder as HtmlBuilder;
+use Illuminate\Database\Eloquent\Builder as QueryBuilder;
 
 class PenjualanDataTable extends DataTable
 {
@@ -34,7 +36,11 @@ class PenjualanDataTable extends DataTable
      */
     public function query(Penjualan $model): QueryBuilder
     {
-        return $model->newQuery()->with('pelanggan');
+        $filter = Session::get('filter');
+        return $model->newQuery()
+                    ->where('tglPenjualan','>=',($filter['start_date']??date('Y-m-d')))
+                    ->where('tglPenjualan','<=',($filter['end_date']??date('Y-m-d')))
+                    ->with('pelanggan');
     }
 
     /**
@@ -70,7 +76,7 @@ class PenjualanDataTable extends DataTable
             Column::make('id')->title(__('No'))->data('DT_RowIndex')->addClass('text-center')->width(10),
             Column::make('tglPenjualan')->title('Tanggal Penjualan'),
             Column::make('pelanggan_id')->title('Nama Pelanggan'),
-            Column::make('totalHarga')->title('Total Pembelian'),
+            Column::make('totalHarga')->title('Total Penjualan'),
             Column::computed('action')->title('Aksi')
                   ->exportable(false)
                   ->printable(false)
